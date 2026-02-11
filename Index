@@ -1,0 +1,2713 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AgroChem Control — Multi-Empresa</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#070A12;
+      --panel:rgba(12,18,32,.72);
+      --panel2:rgba(14,23,43,.52);
+      --card:rgba(14,23,43,.42);
+      --text:#EAF0FF;
+      --muted:#A7B0C6;
+      --muted2:#7E89A5;
+      --line:rgba(255,255,255,.10);
+      --line2:rgba(255,255,255,.16);
+      --shadow:0 18px 52px rgba(0,0,0,.55);
+      --shadow2:0 12px 32px rgba(0,0,0,.45);
+      --r16:16px;
+      --r20:20px;
+      --r24:24px;
+      --ok:#22C55E;
+      --warn:#F59E0B;
+      --bad:#EF4444;
+      --cyan:#22D3EE;
+      --blue:#60A5FA;
+      --green:#4ADE80;
+      --focus:0 0 0 3px rgba(34,211,238,.22);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      color:var(--text);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:
+        radial-gradient(1100px 520px at 15% 0%, rgba(96,165,250,.13), transparent 60%),
+        radial-gradient(950px 520px at 85% 0%, rgba(74,222,128,.11), transparent 55%),
+        radial-gradient(1000px 600px at 50% 120%, rgba(34,211,238,.08), transparent 60%),
+        var(--bg);
+      letter-spacing:.2px;
+    }
+
+    a{ color:inherit; text-decoration:none; }
+    button,input,select,textarea{ font-family:inherit; }
+    .hidden{ display:none !important; }
+
+    .shell{
+      min-height:100vh;
+      display:grid;
+      grid-template-columns: 290px 1fr;
+    }
+
+    .sidebar{
+      position:sticky;
+      top:0;
+      height:100vh;
+      padding:16px;
+      border-right:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(12,18,32,.88), rgba(12,18,32,.62));
+      backdrop-filter: blur(10px);
+    }
+
+    .brand{
+      display:flex; gap:10px; align-items:center;
+      padding:12px;
+      border-radius: var(--r20);
+      background: linear-gradient(180deg, rgba(14,23,43,.78), rgba(14,23,43,.40));
+      border:1px solid var(--line);
+      box-shadow: var(--shadow2);
+    }
+    .logo{
+      width:38px;height:38px;border-radius:14px;
+      background:
+        radial-gradient(12px 12px at 30% 30%, rgba(255,255,255,.35), transparent 55%),
+        linear-gradient(135deg, rgba(74,222,128,.95), rgba(96,165,250,.9));
+      box-shadow: 0 14px 30px rgba(0,0,0,.35);
+      flex:0 0 auto;
+    }
+    .brand .t1{ font-family:Manrope; font-weight:900; letter-spacing:.3px; }
+    .brand .t2{ font-size:12px; color:var(--muted); margin-top:2px; }
+
+    .sideBox{
+      margin-top:12px;
+      padding:12px;
+      border-radius: var(--r20);
+      border:1px solid var(--line);
+      background: rgba(14,23,43,.40);
+    }
+    .sideLabel{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:8px;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid var(--line2);
+      background: rgba(7,10,18,.32);
+      font-size:12px;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--line2);
+      background: rgba(7,10,18,.25);
+      font-size:12px;
+      color:var(--muted);
+    }
+    .dot{ width:8px;height:8px;border-radius:999px;background:var(--ok); box-shadow:0 0 0 3px rgba(34,197,94,.12); }
+
+    .nav{ margin-top:10px; display:flex; flex-direction:column; gap:8px; }
+    .navBtn{
+      width:100%;
+      display:flex; gap:10px; align-items:center;
+      padding:10px 12px;
+      border-radius: 16px;
+      border:1px solid var(--line);
+      background: rgba(14,23,43,.22);
+      color:var(--text);
+      cursor:pointer;
+      transition:.12s ease;
+    }
+    .navBtn:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,.18); }
+    .navBtn.active{
+      background: linear-gradient(180deg, rgba(96,165,250,.18), rgba(74,222,128,.10));
+      border-color: rgba(96,165,250,.25);
+      box-shadow: 0 16px 36px rgba(0,0,0,.35);
+    }
+    .ico{
+      width:28px;height:28px;border-radius:12px;
+      display:grid; place-items:center;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      flex:0 0 auto;
+    }
+    .navText{ display:flex; flex-direction:column; gap:2px; text-align:left; }
+    .navText b{ font-size:13px; }
+    .navText span{ font-size:12px; color:var(--muted); }
+
+    .content{
+      width:100%;
+      max-width: 1260px;
+      margin:0 auto;
+      padding:20px;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+    .h1{
+      margin:0;
+      font-family:Manrope;
+      font-weight:900;
+      font-size:22px;
+      letter-spacing:.2px;
+    }
+    .sub{
+      margin-top:6px;
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+    .btn{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid var(--line2);
+      background: rgba(14,23,43,.35);
+      color:var(--text);
+      cursor:pointer;
+      transition:.12s ease;
+      user-select:none;
+    }
+    .btn:hover{ transform: translateY(-1px); }
+    .btn:focus{ outline:none; box-shadow: var(--focus); }
+    .btn.primary{
+      border-color: rgba(34,211,238,.32);
+      background: linear-gradient(135deg, rgba(34,211,238,.18), rgba(96,165,250,.12));
+    }
+    .btn.good{
+      border-color: rgba(74,222,128,.30);
+      background: linear-gradient(135deg, rgba(74,222,128,.16), rgba(34,211,238,.08));
+    }
+    .btn.bad{
+      border-color: rgba(239,68,68,.30);
+      background: linear-gradient(135deg, rgba(239,68,68,.12), rgba(245,158,11,.08));
+    }
+    .btn.sm{ padding:8px 10px; border-radius:999px; }
+
+    .card{
+      border:1px solid var(--line);
+      background: var(--card);
+      border-radius: var(--r24);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+    }
+    .cardHead{
+      padding:16px 16px 12px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:flex-start;
+    }
+    .cardTitle{
+      margin:0;
+      font-family:Manrope;
+      font-weight:900;
+      font-size:15px;
+    }
+    .cardHint{
+      margin-top:4px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+    .cardBody{ padding:16px; }
+
+    .grid{ display:grid; gap:12px; }
+    .kpis{ grid-template-columns: repeat(4, minmax(0,1fr)); }
+    .kpi{
+      border:1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(7,10,18,.18), rgba(7,10,18,.04));
+      padding:14px;
+      position:relative;
+      overflow:hidden;
+    }
+    .kpi:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(320px 120px at 20% 0%, rgba(96,165,250,.18), transparent 55%),
+        radial-gradient(260px 120px at 80% 0%, rgba(74,222,128,.14), transparent 55%);
+      opacity:.80;
+      pointer-events:none;
+    }
+    .kpi *{ position:relative; }
+    .kpi .l{ color:var(--muted); font-size:12px; display:flex; justify-content:space-between; gap:10px; align-items:center; }
+    .kpi .v{ margin-top:10px; font-family:Manrope; font-weight:900; font-size:22px; }
+    .kpi .s{ margin-top:6px; color:var(--muted2); font-size:12px; }
+
+    .split{ display:grid; grid-template-columns: 1.2fr .8fr; gap:12px; }
+
+    .toolbar{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px; }
+    .search{ flex:1 1 260px; }
+
+    .form{ display:grid; grid-template-columns: repeat(12, 1fr); gap:10px; }
+    .field{ grid-column: span 6; }
+    .field.sm{ grid-column: span 4; }
+    .field.xs{ grid-column: span 3; }
+    .field.full{ grid-column: span 12; }
+
+    .label{ display:flex; justify-content:space-between; gap:10px; font-size:12px; color:var(--muted); margin-bottom:6px; }
+    .input,.select,.textarea{
+      width:100%;
+      border:1px solid var(--line2);
+      background: rgba(7,10,18,.32);
+      color: var(--text);
+      border-radius: 14px;
+      padding:10px 12px;
+      outline:none;
+      transition:.12s ease;
+    }
+    .textarea{ min-height:84px; resize:vertical; }
+    .input:focus,.select:focus,.textarea:focus{ box-shadow: var(--focus); border-color: rgba(34,211,238,.35); }
+
+    table{
+      width:100%;
+      border-collapse: collapse;
+      border-radius: 16px;
+      overflow:hidden;
+      border:1px solid var(--line);
+    }
+    th,td{
+      padding:12px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      font-size:13px;
+      vertical-align:top;
+    }
+    th{ color:var(--muted); font-weight:600; background: rgba(7,10,18,.22); }
+    tr:hover td{ background: rgba(255,255,255,.03); }
+    .tmuted{ color:var(--muted); font-size:12px; }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono"; }
+
+    .ok{ color:var(--ok); }
+    .warn{ color:var(--warn); }
+    .badc{ color:var(--bad); }
+
+    /* Modals */
+    .overlay{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.56);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:50;
+      backdrop-filter: blur(8px);
+    }
+    .overlay.show{ display:flex; }
+    .modal{
+      width:min(1040px, 100%);
+      border-radius: 24px;
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(12,18,32,.97), rgba(12,18,32,.84));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .modalHead{
+      padding:16px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .modalHead h3{
+      margin:0;
+      font-family:Manrope;
+      font-weight:900;
+      font-size:16px;
+    }
+    .modalBody{ padding:16px; }
+
+    /* Auth */
+    .authWrap{
+      position:fixed; inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:80;
+      background:
+        radial-gradient(900px 520px at 20% 0%, rgba(96,165,250,.16), transparent 60%),
+        radial-gradient(820px 520px at 80% 0%, rgba(74,222,128,.14), transparent 55%),
+        rgba(0,0,0,.60);
+      backdrop-filter: blur(10px);
+    }
+    .authWrap.show{ display:flex; }
+    .authCard{
+      width:min(520px, 100%);
+      border-radius:24px;
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(12,18,32,.98), rgba(12,18,32,.88));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .authHead{ padding:16px; border-bottom:1px solid var(--line); }
+    .authHead .t{ font-family:Manrope; font-weight:900; font-size:18px; }
+    .authHead .d{ margin-top:6px; font-size:12px; color:var(--muted); line-height:1.6; }
+    .authBody{ padding:16px; }
+
+    /* Toast */
+    .toast{
+      position:fixed;
+      bottom:16px; left:50%;
+      transform:translateX(-50%);
+      display:none;
+      align-items:center;
+      gap:10px;
+      max-width: 92vw;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(12,18,32,.96);
+      box-shadow: var(--shadow2);
+      z-index:90;
+    }
+    .toast.show{ display:flex; }
+    .toast small{ display:block; color:var(--muted); margin-top:2px; }
+
+    @media (max-width: 980px){
+      .shell{ grid-template-columns: 1fr; }
+      .sidebar{ position:relative; height:auto; }
+      .kpis{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .split{ grid-template-columns: 1fr; }
+    }
+    @media (max-width: 520px){
+      .kpis{ grid-template-columns: 1fr; }
+      .field,.field.sm,.field.xs{ grid-column: span 12; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="shell" id="shell">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <div class="t1">AgroChem Control</div>
+          <div class="t2">Rastreabilidade • Compliance • Custo/ha</div>
+        </div>
+      </div>
+
+      <div class="sideBox">
+        <div class="sideLabel">
+          <span>Status</span>
+          <span class="pill"><span class="dot"></span> Online</span>
+        </div>
+        <div class="row" style="gap:8px;">
+          <span class="chip">Multi-empresa</span>
+          <span class="chip">Soja</span>
+          <span class="chip">RLS</span>
+        </div>
+      </div>
+
+      <div class="sideBox">
+        <div class="sideLabel">
+          <span>Empresa ativa</span>
+          <button class="btn sm" id="btnOrgPicker">Trocar</button>
+        </div>
+        <div class="pill" style="width:100%; justify-content:space-between;">
+          <span id="activeOrgName">—</span>
+          <span class="tmuted" id="activeOrgRole">—</span>
+        </div>
+      </div>
+
+      <div class="nav" style="margin-top:12px;">
+        <button class="navBtn active" data-view="dashboard">
+          <div class="ico">📊</div>
+          <div class="navText"><b>Dashboard</b><span>KPIs e alertas</span></div>
+        </button>
+        <button class="navBtn" data-view="farms">
+          <div class="ico">🏡</div>
+          <div class="navText"><b>Fazendas</b><span>Cadastro e gestão</span></div>
+        </button>
+        <button class="navBtn" data-view="fields">
+          <div class="ico">🧩</div>
+          <div class="navText"><b>Talhões</b><span>Área e plantio</span></div>
+        </button>
+        <button class="navBtn" data-view="products">
+          <div class="ico">🧴</div>
+          <div class="navText"><b>Produtos</b><span>PHI/REI</span></div>
+        </button>
+        <button class="navBtn" data-view="equipment">
+          <div class="ico">🚜</div>
+          <div class="navText"><b>Equipamentos</b><span>Calibração</span></div>
+        </button>
+        <button class="navBtn" data-view="apps">
+          <div class="ico">🧪</div>
+          <div class="navText"><b>Aplicações</b><span>Itens da calda</span></div>
+        </button>
+        <button class="navBtn" data-view="team">
+          <div class="ico">👥</div>
+          <div class="navText"><b>Equipe</b><span>Convites e roles</span></div>
+        </button>
+        <button class="navBtn" data-view="settings">
+          <div class="ico">⚙️</div>
+          <div class="navText"><b>Configurações</b><span>Conexão</span></div>
+        </button>
+      </div>
+
+      <div class="sideBox">
+        <div class="sideLabel"><span>Conta</span></div>
+        <div class="row" style="justify-content:space-between;">
+          <div>
+            <div style="font-weight:800;font-size:13px" id="userLine">—</div>
+            <div class="tmuted" id="userSub">—</div>
+          </div>
+          <button class="btn bad" id="btnLogout">Sair</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+      <div class="topbar">
+        <div>
+          <h1 class="h1" id="pageTitle">Dashboard</h1>
+          <div class="sub" id="pageSub">KPIs por empresa → fazenda → talhão. Base para auditoria e PDF.</div>
+        </div>
+        <div class="row">
+          <button class="btn" id="btnQuickNewApp">+ Nova aplicação</button>
+          <button class="btn primary" id="btnQuickNewOrg">+ Nova empresa</button>
+        </div>
+      </div>
+
+      <!-- VIEWS -->
+      <section class="view" id="view-dashboard">
+        <div class="grid kpis">
+          <div class="kpi">
+            <div class="l"><span>Aplicações (30d)</span><span class="chip">RPC</span></div>
+            <div class="v" id="kpiApps">—</div>
+            <div class="s" id="kpiAppsSub">—</div>
+          </div>
+          <div class="kpi">
+            <div class="l"><span>Área tratada (ha)</span><span class="chip">RPC</span></div>
+            <div class="v" id="kpiArea">—</div>
+            <div class="s" id="kpiAreaSub">—</div>
+          </div>
+          <div class="kpi">
+            <div class="l"><span>Custo total (R$)</span><span class="chip">RPC</span></div>
+            <div class="v" id="kpiCost">—</div>
+            <div class="s" id="kpiCostSub">—</div>
+          </div>
+          <div class="kpi">
+            <div class="l"><span>Custo médio (R$/ha)</span><span class="chip">RPC</span></div>
+            <div class="v" id="kpiCostHa">—</div>
+            <div class="s" id="kpiCostHaSub">—</div>
+          </div>
+        </div>
+
+        <div style="height:12px"></div>
+
+        <div class="split">
+          <div class="card">
+            <div class="cardHead">
+              <div>
+                <p class="cardTitle">Alertas operacionais</p>
+                <div class="cardHint">Sem “achismo”: cadastros faltando, aplicações incompletas e custo/ha inconsistente.</div>
+              </div>
+              <span class="chip">Qualidade de dados</span>
+            </div>
+            <div class="cardBody" id="alertsBox"></div>
+          </div>
+
+          <div class="card">
+            <div class="cardHead">
+              <div>
+                <p class="cardTitle">Resumo por fazenda</p>
+                <div class="cardHint">Top fazendas por custo (últimos 30 dias) via RPC.</div>
+              </div>
+              <span class="chip">rpc_farm_summary</span>
+            </div>
+            <div class="cardBody" id="farmSummary"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view hidden" id="view-farms">
+        <div class="card">
+          <div class="cardHead">
+            <div>
+              <p class="cardTitle">Fazendas</p>
+              <div class="cardHint">Cadastre fazendas por empresa.</div>
+            </div>
+            <button class="btn good" id="btnNewFarm">+ Nova fazenda</button>
+          </div>
+          <div class="cardBody">
+            <div class="toolbar">
+              <input class="input search" id="farmSearch" placeholder="Buscar fazenda..." />
+              <span class="chip" id="farmCount">—</span>
+            </div>
+            <div style="overflow:auto;">
+              <table>
+                <thead><tr><th>Fazenda</th><th>Local</th><th>Observações</th><th style="width:220px">Ações</th></tr></thead>
+                <tbody id="farmTbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view hidden" id="view-fields">
+        <div class="card">
+          <div class="cardHead">
+            <div>
+              <p class="cardTitle">Talhões</p>
+              <div class="cardHint">Área (ha), variedade e plantio.</div>
+            </div>
+            <button class="btn good" id="btnNewField">+ Novo talhão</button>
+          </div>
+          <div class="cardBody">
+            <div class="toolbar">
+              <select class="select" id="fieldFarmFilter" style="min-width:240px"></select>
+              <input class="input search" id="fieldSearch" placeholder="Buscar talhão..." />
+              <span class="chip" id="fieldCount">—</span>
+            </div>
+            <div style="overflow:auto;">
+              <table>
+                <thead><tr><th>Talhão</th><th>Fazenda</th><th>Área</th><th>Variedade</th><th>Plantio</th><th style="width:220px">Ações</th></tr></thead>
+                <tbody id="fieldTbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view hidden" id="view-products">
+        <div class="card">
+          <div class="cardHead">
+            <div>
+              <p class="cardTitle">Produtos</p>
+              <div class="cardHint">Cadastro para itens da calda e compliance.</div>
+            </div>
+            <button class="btn good" id="btnNewProduct">+ Novo produto</button>
+          </div>
+          <div class="cardBody">
+            <div class="toolbar">
+              <input class="input search" id="productSearch" placeholder="Buscar produto..." />
+              <span class="chip" id="productCount">—</span>
+            </div>
+            <div style="overflow:auto;">
+              <table>
+                <thead><tr><th>Produto</th><th>Ingrediente ativo</th><th>Classe</th><th>PHI/REI</th><th style="width:220px">Ações</th></tr></thead>
+                <tbody id="productTbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view hidden" id="view-equipment">
+        <div class="card">
+          <div class="cardHead">
+            <div>
+              <p class="cardTitle">Equipamentos</p>
+              <div class="cardHint">Calibração, bicos, vazão.</div>
+            </div>
+            <button class="btn good" id="btnNewEquip">+ Novo equipamento</button>
+          </div>
+          <div class="cardBody">
+            <div class="toolbar">
+              <input class="input search" id="equipSearch" placeholder="Buscar equipamento..." />
+              <span class="chip" id="equipCount">—</span>
+            </div>
+            <div style="overflow:auto;">
+              <table>
+                <thead><tr><th>Equipamento</th><th>Tipo</th><th>Bico/Vazão</th><th>Calibração</th><th style="width:220px">Ações</th></tr></thead>
+                <tbody id="equipTbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view hidden" id="view-apps">
+        <div class="card">
+          <div class="cardHead">
+            <div>
+              <p class="cardTitle">Aplicações</p>
+              <div class="cardHint">Registro por talhão com clima e itens da calda.</div>
+            </div>
+            <button class="btn good" id="btnNewApp">+ Nova aplicação</button>
+          </div>
+          <div class="cardBody">
+            <div class="toolbar">
+              <select class="select" id="appsFarmFilter" style="min-width:240px"></select>
+              <select class="select" id="appsFieldFilter" style="min-width:240px"></select>
+              <input class="input search" id="appsSearch" placeholder="Buscar aplicação..." />
+              <span class="chip" id="appsCount">—</span>
+            </div>
+            <div style="overflow:auto;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Fazenda / Talhão</th>
+                    <th>Tipo</th>
+                    <th>Área</th>
+                    <th>Custo</th>
+                    <th>Clima</th>
+                    <th style="width:260px">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="appsTbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view hidden" id="view-team">
+        <div class="card">
+          <div class="cardHead">
+            <div>
+              <p class="cardTitle">Equipe</p>
+              <div class="cardHint">Convites por código via RPC (admin/manager/owner).</div>
+            </div>
+            <div class="row">
+              <button class="btn primary" id="btnInvite">+ Convidar</button>
+              <button class="btn" id="btnAcceptInvite">Aceitar convite</button>
+            </div>
+          </div>
+          <div class="cardBody">
+            <div class="toolbar">
+              <input class="input search" id="teamSearch" placeholder="Buscar membro..." />
+              <span class="chip" id="teamCount">—</span>
+            </div>
+            <div style="overflow:auto;">
+              <table>
+                <thead><tr><th>Membro</th><th>Role</th><th>Status</th><th style="width:220px">Ações</th></tr></thead>
+                <tbody id="teamTbody"></tbody>
+              </table>
+            </div>
+
+            <div style="height:12px"></div>
+
+            <div class="card" style="background: rgba(7,10,18,.20);">
+              <div class="cardHead">
+                <div>
+                  <p class="cardTitle">Convites</p>
+                  <div class="cardHint">Somente gestores enxergam (RLS).</div>
+                </div>
+                <span class="chip">org_invites</span>
+              </div>
+              <div class="cardBody" style="overflow:auto;">
+                <table>
+                  <thead><tr><th>Email</th><th>Role</th><th>Status</th><th>Expira</th><th>Código</th></tr></thead>
+                  <tbody id="inviteTbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <section class="view hidden" id="view-settings">
+        <div class="card">
+          <div class="cardHead">
+            <div>
+              <p class="cardTitle">Configurações</p>
+              <div class="cardHint">Teste de conexão e utilitários.</div>
+            </div>
+            <span class="chip">Supabase</span>
+          </div>
+          <div class="cardBody">
+            <div class="row" style="justify-content:flex-start;">
+              <button class="btn primary" id="btnCheckConn">Testar conexão</button>
+              <button class="btn" id="btnReload">Recarregar dados</button>
+            </div>
+            <div class="tmuted" style="margin-top:10px; line-height:1.7">
+              Se der erro: confira <b>SUPABASE_URL</b>, <b>ANON_KEY</b> e se o Auth Email está habilitado.
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- AUTH -->
+  <div class="authWrap" id="authWrap">
+    <div class="authCard">
+      <div class="authHead">
+        <div class="t">Entrar</div>
+        <div class="d">Acesso seguro multi-empresa com Supabase (RLS). Use e-mail e senha.</div>
+      </div>
+      <div class="authBody">
+        <form id="authForm" class="form">
+          <div class="field full">
+            <div class="label">E-mail</div>
+            <input class="input" id="authEmail" type="email" required placeholder="voce@empresa.com" />
+          </div>
+          <div class="field full">
+            <div class="label">Senha</div>
+            <input class="input" id="authPass" type="password" required placeholder="••••••••" />
+          </div>
+          <div class="field full" style="display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap;">
+            <button type="button" class="btn" id="btnSignUp">Criar conta</button>
+            <button type="submit" class="btn primary">Entrar</button>
+          </div>
+        </form>
+        <div class="tmuted" style="margin-top:10px; line-height:1.7">
+          Primeiro acesso? Clique em <b>Criar conta</b>, depois faça login.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALS -->
+  <div class="overlay" id="orgModal">
+    <div class="modal">
+      <div class="modalHead">
+        <h3>Empresas</h3>
+        <div class="row">
+          <button class="btn primary" id="btnCreateOrg">+ Criar empresa</button>
+          <button class="btn" data-close="orgModal">Fechar</button>
+        </div>
+      </div>
+      <div class="modalBody">
+        <div class="toolbar">
+          <input class="input search" id="orgSearch" placeholder="Buscar empresa..." />
+          <span class="chip" id="orgCount">—</span>
+        </div>
+        <div id="orgList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="farmModal">
+    <div class="modal">
+      <div class="modalHead">
+        <h3 id="farmModalTitle">Nova fazenda</h3>
+        <button class="btn" data-close="farmModal">Fechar</button>
+      </div>
+      <div class="modalBody">
+        <form id="farmForm" class="form">
+          <input type="hidden" id="farm_id" />
+          <div class="field full">
+            <div class="label">Nome</div>
+            <input class="input" id="farm_name" required placeholder="Ex: Fazenda Santa Clara" />
+          </div>
+          <div class="field sm">
+            <div class="label">Cidade</div>
+            <input class="input" id="farm_city" placeholder="Ex: Sorriso" />
+          </div>
+          <div class="field xs">
+            <div class="label">UF</div>
+            <input class="input" id="farm_state" maxlength="2" placeholder="Ex: MT" />
+          </div>
+          <div class="field full">
+            <div class="label">Observações</div>
+            <textarea class="textarea" id="farm_notes"></textarea>
+          </div>
+          <div class="field full" style="display:flex; justify-content:flex-end; gap:10px;">
+            <button type="button" class="btn" data-close="farmModal">Cancelar</button>
+            <button class="btn good" type="submit">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="fieldModal">
+    <div class="modal">
+      <div class="modalHead">
+        <h3 id="fieldModalTitle">Novo talhão</h3>
+        <button class="btn" data-close="fieldModal">Fechar</button>
+      </div>
+      <div class="modalBody">
+        <form id="fieldForm" class="form">
+          <input type="hidden" id="field_id" />
+          <div class="field sm">
+            <div class="label">Fazenda</div>
+            <select class="select" id="field_farm" required></select>
+          </div>
+          <div class="field xs">
+            <div class="label">Código</div>
+            <input class="input" id="field_code" placeholder="Ex: T12" />
+          </div>
+          <div class="field sm">
+            <div class="label">Nome</div>
+            <input class="input" id="field_name" required placeholder="Ex: Talhão 12" />
+          </div>
+          <div class="field xs">
+            <div class="label">Área (ha)</div>
+            <input class="input" id="field_area" type="number" step="0.01" min="0" required placeholder="Ex: 45.5" />
+          </div>
+          <div class="field sm">
+            <div class="label">Cultura</div>
+            <input class="input" id="field_crop" value="soja" />
+          </div>
+          <div class="field sm">
+            <div class="label">Variedade</div>
+            <input class="input" id="field_variety" placeholder="Ex: BMX Potência" />
+          </div>
+          <div class="field sm">
+            <div class="label">Plantio</div>
+            <input class="input" id="field_planting" type="date" />
+          </div>
+          <div class="field full">
+            <div class="label">Observações</div>
+            <textarea class="textarea" id="field_notes"></textarea>
+          </div>
+          <div class="field full" style="display:flex; justify-content:flex-end; gap:10px;">
+            <button type="button" class="btn" data-close="fieldModal">Cancelar</button>
+            <button class="btn good" type="submit">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="productModal">
+    <div class="modal">
+      <div class="modalHead">
+        <h3 id="productModalTitle">Novo produto</h3>
+        <button class="btn" data-close="productModal">Fechar</button>
+      </div>
+      <div class="modalBody">
+        <form id="productForm" class="form">
+          <input type="hidden" id="product_id" />
+          <div class="field full">
+            <div class="label">Nome</div>
+            <input class="input" id="product_name" required />
+          </div>
+          <div class="field sm">
+            <div class="label">Ingrediente ativo</div>
+            <input class="input" id="product_ai" />
+          </div>
+          <div class="field xs">
+            <div class="label">Classe</div>
+            <input class="input" id="product_class" placeholder="Ex: Fungicida" />
+          </div>
+          <div class="field xs">
+            <div class="label">PHI (dias)</div>
+            <input class="input" id="product_phi" type="number" min="0" step="1" />
+          </div>
+          <div class="field xs">
+            <div class="label">REI (horas)</div>
+            <input class="input" id="product_rei" type="number" min="0" step="1" />
+          </div>
+          <div class="field sm">
+            <div class="label">Fabricante</div>
+            <input class="input" id="product_mfg" />
+          </div>
+          <div class="field sm">
+            <div class="label">Registro</div>
+            <input class="input" id="product_reg" />
+          </div>
+          <div class="field full">
+            <div class="label">Observações</div>
+            <textarea class="textarea" id="product_notes"></textarea>
+          </div>
+          <div class="field full" style="display:flex; justify-content:flex-end; gap:10px;">
+            <button type="button" class="btn" data-close="productModal">Cancelar</button>
+            <button class="btn good" type="submit">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="equipModal">
+    <div class="modal">
+      <div class="modalHead">
+        <h3 id="equipModalTitle">Novo equipamento</h3>
+        <button class="btn" data-close="equipModal">Fechar</button>
+      </div>
+      <div class="modalBody">
+        <form id="equipForm" class="form">
+          <input type="hidden" id="equip_id" />
+          <div class="field full">
+            <div class="label">Nome</div>
+            <input class="input" id="equip_name" required />
+          </div>
+          <div class="field sm">
+            <div class="label">Tipo</div>
+            <input class="input" id="equip_type" placeholder="Ex: barra" />
+          </div>
+          <div class="field sm">
+            <div class="label">Bico</div>
+            <input class="input" id="equip_nozzle" />
+          </div>
+          <div class="field sm">
+            <div class="label">Vazão (L/min)</div>
+            <input class="input" id="equip_flow" type="number" step="0.001" min="0" />
+          </div>
+          <div class="field sm">
+            <div class="label">Última calibração</div>
+            <input class="input" id="equip_calib" type="date" />
+          </div>
+          <div class="field full">
+            <div class="label">Observações</div>
+            <textarea class="textarea" id="equip_notes"></textarea>
+          </div>
+          <div class="field full" style="display:flex; justify-content:flex-end; gap:10px;">
+            <button type="button" class="btn" data-close="equipModal">Cancelar</button>
+            <button class="btn good" type="submit">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="appModal">
+    <div class="modal">
+      <div class="modalHead">
+        <h3 id="appModalTitle">Nova aplicação</h3>
+        <div class="row">
+          <button class="btn" id="btnAppReport">Relatório</button>
+          <button class="btn" data-close="appModal">Fechar</button>
+        </div>
+      </div>
+      <div class="modalBody">
+        <form id="appForm" class="form">
+          <input type="hidden" id="app_id" />
+
+          <div class="field sm">
+            <div class="label">Fazenda</div>
+            <select class="select" id="app_farm" required></select>
+          </div>
+          <div class="field sm">
+            <div class="label">Talhão</div>
+            <select class="select" id="app_field" required></select>
+          </div>
+          <div class="field xs">
+            <div class="label">Tipo</div>
+            <select class="select" id="app_type">
+              <option value="terrestrial">Terrestre</option>
+              <option value="aerial">Aérea</option>
+              <option value="drone">Drone</option>
+            </select>
+          </div>
+
+          <div class="field sm">
+            <div class="label">Data/hora</div>
+            <input class="input" id="app_applied_at" type="datetime-local" required />
+          </div>
+
+          <div class="field xs">
+            <div class="label">Área aplicada (ha)</div>
+            <input class="input" id="app_area" type="number" step="0.01" min="0" required />
+          </div>
+
+          <div class="field xs">
+            <div class="label">Calda (L/ha)</div>
+            <input class="input" id="app_spray" type="number" step="0.01" min="0" />
+          </div>
+
+          <div class="field xs">
+            <div class="label">Velocidade (km/h)</div>
+            <input class="input" id="app_speed" type="number" step="0.01" min="0" />
+          </div>
+
+          <div class="field xs">
+            <div class="label">Pressão (bar)</div>
+            <input class="input" id="app_pressure" type="number" step="0.01" min="0" />
+          </div>
+
+          <div class="field sm">
+            <div class="label">Equipamento</div>
+            <select class="select" id="app_equip"></select>
+          </div>
+
+          <div class="field xs">
+            <div class="label">Vento (m/s)</div>
+            <input class="input" id="app_wind" type="number" step="0.1" min="0" />
+          </div>
+          <div class="field xs">
+            <div class="label">Temp (°C)</div>
+            <input class="input" id="app_temp" type="number" step="0.1" />
+          </div>
+          <div class="field xs">
+            <div class="label">Umidade (%)</div>
+            <input class="input" id="app_hum" type="number" step="0.1" min="0" max="100" />
+          </div>
+
+          <div class="field full">
+            <div class="label">Observações</div>
+            <textarea class="textarea" id="app_notes"></textarea>
+          </div>
+
+          <div class="field full" style="display:flex; justify-content:flex-end; gap:10px;">
+            <button type="button" class="btn" data-close="appModal">Cancelar</button>
+            <button class="btn good" type="submit">Salvar aplicação</button>
+          </div>
+        </form>
+
+        <div style="height:12px"></div>
+
+        <div class="card" style="background: rgba(7,10,18,.20);">
+          <div class="cardHead">
+            <div>
+              <p class="cardTitle">Itens da calda</p>
+              <div class="cardHint">O banco recalcula custo total e custo/ha automaticamente.</div>
+            </div>
+            <button class="btn primary" id="btnNewItem">+ Adicionar item</button>
+          </div>
+          <div class="cardBody" style="overflow:auto;">
+            <table>
+              <thead><tr><th>Produto</th><th>Dose</th><th>Total</th><th>Lote</th><th>Custo (R$)</th><th style="width:220px">Ações</th></tr></thead>
+              <tbody id="itemTbody"></tbody>
+            </table>
+            <div class="tmuted" style="margin-top:10px; line-height:1.7">
+              Dica: você pode informar somente o <b>custo do item</b>. O total da aplicação é calculado pelo trigger.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="itemModal">
+    <div class="modal">
+      <div class="modalHead">
+        <h3 id="itemModalTitle">Novo item</h3>
+        <button class="btn" data-close="itemModal">Fechar</button>
+      </div>
+      <div class="modalBody">
+        <form id="itemForm" class="form">
+          <input type="hidden" id="item_id" />
+
+          <div class="field full">
+            <div class="label">Produto</div>
+            <select class="select" id="item_product" required></select>
+          </div>
+
+          <div class="field sm">
+            <div class="label">Dose/ha</div>
+            <input class="input" id="item_dose" type="number" step="0.0001" min="0" required />
+          </div>
+
+          <div class="field sm">
+            <div class="label">Unidade</div>
+            <input class="input" id="item_unit" value="L/ha" />
+          </div>
+
+          <div class="field sm">
+            <div class="label">Total (auto: dose × área)</div>
+            <input class="input" id="item_total" type="number" step="0.0001" min="0" placeholder="Se vazio, calculamos" />
+          </div>
+
+          <div class="field sm">
+            <div class="label">Lote</div>
+            <input class="input" id="item_lot" />
+          </div>
+
+          <div class="field sm">
+            <div class="label">Custo do item (R$)</div>
+            <input class="input" id="item_cost" type="number" step="0.01" min="0" />
+          </div>
+
+          <div class="field full" style="display:flex; justify-content:flex-end; gap:10px;">
+            <button type="button" class="btn" data-close="itemModal">Cancelar</button>
+            <button class="btn good" type="submit">Salvar item</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="inviteModal">
+    <div class="modal">
+      <div class="modalHead">
+        <h3>Convidar membro</h3>
+        <button class="btn" data-close="inviteModal">Fechar</button>
+      </div>
+      <div class="modalBody">
+        <form id="inviteForm" class="form">
+          <div class="field full">
+            <div class="label">E-mail</div>
+            <input class="input" id="invite_email" type="email" required />
+          </div>
+          <div class="field sm">
+            <div class="label">Role</div>
+            <select class="select" id="invite_role">
+              <option value="manager">manager</option>
+              <option value="applicator">applicator</option>
+              <option value="auditor">auditor</option>
+              <option value="admin">admin</option>
+            </select>
+          </div>
+          <div class="field full" style="display:flex; justify-content:flex-end; gap:10px;">
+            <button type="button" class="btn" data-close="inviteModal">Cancelar</button>
+            <button class="btn primary" type="submit">Gerar convite</button>
+          </div>
+        </form>
+
+        <div style="height:12px;"></div>
+
+        <div class="pill mono" style="width:100%; justify-content:space-between;">
+          <span id="invite_code">—</span>
+          <button class="btn sm" id="btnCopyInvite">Copiar</button>
+        </div>
+
+        <div class="tmuted" style="margin-top:10px; line-height:1.7">
+          Envie o código para o usuário. Ele usa “Aceitar convite”.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="acceptInviteModal">
+    <div class="modal">
+      <div class="modalHead">
+        <h3>Aceitar convite</h3>
+        <button class="btn" data-close="acceptInviteModal">Fechar</button>
+      </div>
+      <div class="modalBody">
+        <form id="acceptInviteForm" class="form">
+          <div class="field full">
+            <div class="label">Código</div>
+            <input class="input mono" id="accept_code" required />
+          </div>
+          <div class="field full" style="display:flex; justify-content:flex-end; gap:10px;">
+            <button type="button" class="btn" data-close="acceptInviteModal">Cancelar</button>
+            <button class="btn good" type="submit">Aceitar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast">
+    <span id="toastIcon">✅</span>
+    <div>
+      <b id="toastMsg">OK</b>
+      <small id="toastSub">—</small>
+    </div>
+  </div>
+
+  <script type="module">
+    // ===========================
+    // CONFIG: preencha aqui
+    // ===========================
+    const SUPABASE_URL = "https://gebsuyhtlkahuoxqotwy.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_SJyvENYsSEoc4UA1z96HRg_NF4_3Dj7";
+
+    // ===========================
+    // Utils / UI
+    // ===========================
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+    const UI = {
+      toast(msg, sub=""){
+        $("#toastMsg").textContent = msg;
+        $("#toastSub").textContent = sub || " ";
+        $("#toast").classList.add("show");
+        clearTimeout(UI._t);
+        UI._t = setTimeout(()=> $("#toast").classList.remove("show"), 2600);
+      },
+      open(id){ $("#"+id).classList.add("show"); },
+      close(id){ $("#"+id).classList.remove("show"); },
+      showAuth(show){ $("#authWrap").classList.toggle("show", !!show); },
+      setPage(title, sub){ $("#pageTitle").textContent = title; $("#pageSub").textContent = sub; },
+      escape(s){
+        return String(s ?? "").replace(/[&<>"']/g, m => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
+      }
+    };
+    window.UI = UI;
+
+    const fmt = {
+      money(n){ return (Number(n||0)).toLocaleString("pt-BR",{ style:"currency", currency:"BRL" }); },
+      num(n,d=2){ return (Number(n||0)).toLocaleString("pt-BR",{ minimumFractionDigits:d, maximumFractionDigits:d }); },
+      dt(iso){
+        const d = iso ? new Date(iso) : null;
+        if(!d || isNaN(d.getTime())) return "—";
+        return d.toLocaleString("pt-BR");
+      }
+    };
+
+    const pad2 = (n)=> String(n).padStart(2,"0");
+    const toLocalDT = (date) => {
+      const d = new Date(date);
+      return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}T${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+    };
+    const toIsoFromLocalDT = (v)=>{
+      if(!v) return new Date().toISOString();
+      return new Date(v).toISOString();
+    };
+
+    // ===========================
+    // State
+    // ===========================
+    const State = {
+      supa: null,
+      user: null,
+      orgs: [],
+      activeOrgId: null,
+
+      farms: [],
+      fields: [],
+      products: [],
+      equipment: [],
+      apps: [],
+      appItems: [],
+      orgMembers: [],
+      invites: [],
+
+      currentAppId: null,
+      view: "dashboard",
+    };
+
+    const Views = {
+      meta: {
+        dashboard: ["Dashboard","KPIs por empresa → fazenda → talhão. Base para auditoria e PDF."],
+        farms: ["Fazendas","Cadastre fazendas por empresa."],
+        fields: ["Talhões","Área (ha), variedade e plantio."],
+        products: ["Produtos","Cadastro para itens da calda e compliance."],
+        equipment: ["Equipamentos","Calibração, bicos e vazão."],
+        apps: ["Aplicações","Registro com itens da calda e custo/ha."],
+        team: ["Equipe","Convites, roles e governança multi-empresa."],
+        settings: ["Configurações","Teste de conexão e utilitários."],
+      },
+      show(name){
+        State.view = name;
+        $$(".navBtn").forEach(b => b.classList.toggle("active", b.dataset.view===name));
+        $$(".view").forEach(v => v.classList.add("hidden"));
+        $("#view-"+name).classList.remove("hidden");
+        UI.setPage(...Views.meta[name]);
+      }
+    };
+
+    function requireOrg(){
+      if(!State.activeOrgId){
+        UI.toast("Selecione uma empresa", "Abra Empresas e escolha a empresa ativa");
+        return false;
+      }
+      return true;
+    }
+
+    // ===========================
+    // Supabase
+    // ===========================
+    const { createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
+    State.supa = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ===========================
+    // RPC
+    // ===========================
+    const RPC = {
+      async myOrgs(){
+        const { data, error } = await State.supa.rpc("rpc_my_orgs");
+        if(error) throw error;
+        return data || [];
+      },
+      async createOrg(name, cnpj=null){
+        const { data, error } = await State.supa.rpc("rpc_create_org", { p_name:name, p_cnpj:cnpj });
+        if(error) throw error;
+        return data;
+      },
+      async setActiveOrg(orgId){
+        const { error } = await State.supa.rpc("rpc_set_active_org", { p_org_id: orgId });
+        if(error) throw error;
+      },
+      async dashboardKpis(orgId, days=30){
+        const { data, error } = await State.supa.rpc("rpc_dashboard_kpis", { p_org_id: orgId, p_days: days });
+        if(error) throw error;
+        return data;
+      },
+      async farmSummary(orgId, days=30, limit=20){
+        const { data, error } = await State.supa.rpc("rpc_farm_summary", { p_org_id: orgId, p_days: days, p_limit: limit });
+        if(error) throw error;
+        return data || [];
+      },
+      async inviteMember(orgId, email, role="applicator"){
+        const { data, error } = await State.supa.rpc("rpc_invite_member", { p_org_id:orgId, p_email:email, p_role:role });
+        if(error) throw error;
+        return data;
+      },
+      async acceptInvite(code){
+        const { data, error } = await State.supa.rpc("rpc_accept_invite", { p_code: code });
+        if(error) throw error;
+        return data;
+      },
+      async removeMember(orgId, userId){
+        const { error } = await State.supa.rpc("rpc_remove_member", { p_org_id: orgId, p_user_id: userId });
+        if(error) throw error;
+      }
+    };
+
+    // ===========================
+    // Data
+    // ===========================
+    const Data = {
+      async loadUser(){
+        const { data } = await State.supa.auth.getUser();
+        State.user = data?.user || null;
+        $("#userLine").textContent = State.user?.email || "—";
+        $("#userSub").textContent = State.user ? "Autenticado (RLS ativa)" : "Faça login";
+      },
+
+      async ensureSession(){
+        await Data.loadUser();
+        if(!State.user){
+          UI.showAuth(true);
+          return false;
+        }
+        UI.showAuth(false);
+        return true;
+      },
+
+      async loadOrgs(){
+        State.orgs = await RPC.myOrgs();
+
+        // active from RPC
+        const active = State.orgs.find(o=>o.active);
+        if(active) State.activeOrgId = active.org_id;
+
+        // fallback local
+        const remembered = localStorage.getItem("agrochem_active_org");
+        if(!State.activeOrgId && remembered && State.orgs.some(o=>o.org_id===remembered)){
+          State.activeOrgId = remembered;
+          await RPC.setActiveOrg(State.activeOrgId);
+        }
+
+        // fallback first
+        if(!State.activeOrgId && State.orgs[0]){
+          State.activeOrgId = State.orgs[0].org_id;
+          await RPC.setActiveOrg(State.activeOrgId);
+        }
+
+        localStorage.setItem("agrochem_active_org", State.activeOrgId || "");
+
+        const org = State.orgs.find(o=>o.org_id===State.activeOrgId);
+        $("#activeOrgName").textContent = org?.org_name || "—";
+        $("#activeOrgRole").textContent = org ? `Role: ${org.role}` : "—";
+      },
+
+      async loadAll(){
+        if(!(await Data.ensureSession())) return;
+
+        await Data.loadOrgs();
+        Render.orgList();
+
+        if(!State.orgs.length){
+          UI.open("orgModal");
+          UI.toast("Crie sua primeira empresa");
+          return;
+        }
+        if(!requireOrg()) return;
+
+        await Promise.all([
+          Data.loadFarms(),
+          Data.loadFields(),
+          Data.loadProducts(),
+          Data.loadEquipment(),
+          Data.loadApps(),
+          Data.loadTeam(),
+          Data.loadInvites(),
+        ]);
+
+        Render.all();
+        await Data.refreshDashboard();
+      },
+
+      async refreshDashboard(){
+        if(!requireOrg()) return;
+        try{
+          const k = await RPC.dashboardKpis(State.activeOrgId, 30);
+          Render.kpis(k);
+          const fs = await RPC.farmSummary(State.activeOrgId, 30, 20);
+          Render.farmSummary(fs);
+          Render.alerts();
+        }catch(e){
+          UI.toast("Erro no dashboard", e.message || String(e));
+        }
+      },
+
+      async reloadOrgScope(){
+        if(!requireOrg()) return;
+        await Promise.all([
+          Data.loadFarms(),
+          Data.loadFields(),
+          Data.loadProducts(),
+          Data.loadEquipment(),
+          Data.loadApps(),
+          Data.loadTeam(),
+          Data.loadInvites(),
+        ]);
+        Render.all();
+        await Data.refreshDashboard();
+      },
+
+      async loadFarms(){
+        const { data, error } = await State.supa.from("farms")
+          .select("id,org_id,name,city,state,notes,created_at")
+          .eq("org_id", State.activeOrgId)
+          .order("created_at", { ascending:false });
+        if(error) throw error;
+        State.farms = data || [];
+      },
+      async upsertFarm(p){
+        p.org_id = State.activeOrgId;
+        const { data, error } = await State.supa.from("farms").upsert(p).select().single();
+        if(error) throw error;
+        return data;
+      },
+      async delFarm(id){
+        const { error } = await State.supa.from("farms").delete().eq("id", id);
+        if(error) throw error;
+      },
+
+      async loadFields(){
+        const { data, error } = await State.supa.from("fields")
+          .select("id,org_id,farm_id,code,name,area_ha,crop,variety,planting_date,notes,created_at")
+          .eq("org_id", State.activeOrgId)
+          .order("created_at", { ascending:false });
+        if(error) throw error;
+        State.fields = data || [];
+      },
+      async upsertField(p){
+        p.org_id = State.activeOrgId;
+        const { data, error } = await State.supa.from("fields").upsert(p).select().single();
+        if(error) throw error;
+        return data;
+      },
+      async delField(id){
+        const { error } = await State.supa.from("fields").delete().eq("id", id);
+        if(error) throw error;
+      },
+
+      async loadProducts(){
+        const { data, error } = await State.supa.from("products")
+          .select("id,org_id,name,active_ingredient,product_class,phi_days,rei_hours,manufacturer,registration,notes,created_at")
+          .eq("org_id", State.activeOrgId)
+          .order("created_at", { ascending:false });
+        if(error) throw error;
+        State.products = data || [];
+      },
+      async upsertProduct(p){
+        p.org_id = State.activeOrgId;
+        const { data, error } = await State.supa.from("products").upsert(p).select().single();
+        if(error) throw error;
+        return data;
+      },
+      async delProduct(id){
+        const { error } = await State.supa.from("products").delete().eq("id", id);
+        if(error) throw error;
+      },
+
+      async loadEquipment(){
+        const { data, error } = await State.supa.from("equipment")
+          .select("id,org_id,name,type,nozzle,flow_rate_l_min,last_calibration,notes,created_at")
+          .eq("org_id", State.activeOrgId)
+          .order("created_at", { ascending:false });
+        if(error) throw error;
+        State.equipment = data || [];
+      },
+      async upsertEquip(p){
+        p.org_id = State.activeOrgId;
+        const { data, error } = await State.supa.from("equipment").upsert(p).select().single();
+        if(error) throw error;
+        return data;
+      },
+      async delEquip(id){
+        const { error } = await State.supa.from("equipment").delete().eq("id", id);
+        if(error) throw error;
+      },
+
+      async loadApps(){
+        const { data, error } = await State.supa.from("applications")
+          .select("id,org_id,farm_id,field_id,applied_at,application_type,area_applied_ha,total_cost,cost_per_ha,wind_ms,temperature_c,humidity_pct,spray_volume_l_ha,speed_kmh,pressure_bar,equipment_id,notes,created_at")
+          .eq("org_id", State.activeOrgId)
+          .order("applied_at", { ascending:false });
+        if(error) throw error;
+        State.apps = data || [];
+      },
+      async upsertApp(p){
+        p.org_id = State.activeOrgId;
+        const { data, error } = await State.supa.from("applications").upsert(p).select().single();
+        if(error) throw error;
+        return data;
+      },
+      async delApp(id){
+        const { error } = await State.supa.from("applications").delete().eq("id", id);
+        if(error) throw error;
+      },
+
+      async loadItems(appId){
+        const { data, error } = await State.supa.from("application_items")
+          .select("id,org_id,application_id,product_id,dose_per_ha,unit,total_quantity,batch_lot,item_cost,created_at")
+          .eq("org_id", State.activeOrgId)
+          .eq("application_id", appId)
+          .order("created_at", { ascending:false });
+        if(error) throw error;
+        State.appItems = data || [];
+      },
+      async upsertItem(p){
+        p.org_id = State.activeOrgId;
+        const { data, error } = await State.supa.from("application_items").upsert(p).select().single();
+        if(error) throw error;
+        return data;
+      },
+      async delItem(id){
+        const { error } = await State.supa.from("application_items").delete().eq("id", id);
+        if(error) throw error;
+      },
+
+      async loadTeam(){
+        const { data, error } = await State.supa.from("org_members")
+          .select("org_id,user_id,role,active,joined_at")
+          .eq("org_id", State.activeOrgId)
+          .order("joined_at", { ascending:false });
+        if(error){ State.orgMembers = []; return; }
+        State.orgMembers = data || [];
+      },
+      async loadInvites(){
+        const { data, error } = await State.supa.from("org_invites")
+          .select("id,org_id,email,role,code,status,expires_at,created_at")
+          .eq("org_id", State.activeOrgId)
+          .order("created_at", { ascending:false });
+        if(error){ State.invites = []; return; }
+        State.invites = data || [];
+      }
+    };
+
+    // ===========================
+    // Render
+    // ===========================
+    const Render = {
+      all(){
+        Render.filters();
+        Render.farms();
+        Render.fields();
+        Render.products();
+        Render.equipment();
+        Render.apps();
+        Render.team();
+        Render.invites();
+        Render.alerts();
+      },
+
+      kpis(k){
+        $("#kpiApps").textContent = k?.applications ?? "0";
+        $("#kpiArea").textContent = fmt.num(k?.area_ha ?? 0, 2);
+        $("#kpiCost").textContent = fmt.money(k?.total_cost ?? 0);
+        $("#kpiCostHa").textContent = fmt.money(k?.cost_per_ha ?? 0);
+
+        $("#kpiAppsSub").textContent = `Últimos ${k?.days ?? 30} dias`;
+        $("#kpiAreaSub").textContent = "Somatório (ha)";
+        $("#kpiCostSub").textContent = "Somatório (R$)";
+        $("#kpiCostHaSub").textContent = "Média ponderada";
+      },
+
+      farmSummary(rows){
+        const box = $("#farmSummary");
+        if(!rows?.length){
+          box.innerHTML = `<div class="tmuted">Sem dados para o período.</div>`;
+          return;
+        }
+        box.innerHTML = rows.slice(0,10).map(r=>`
+          <div class="card" style="background: rgba(7,10,18,.20); margin-bottom:10px;">
+            <div class="cardBody" style="display:flex; justify-content:space-between; gap:10px; align-items:flex-start;">
+              <div>
+                <div style="font-weight:900;font-family:Manrope;">${UI.escape(r.farm_name)}</div>
+                <div class="tmuted">${r.applications} aplicações • ${fmt.num(r.area_ha,2)} ha</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-weight:900;font-family:Manrope;">${fmt.money(r.total_cost)}</div>
+                <div class="tmuted">${fmt.money(r.cost_per_ha)} /ha</div>
+              </div>
+            </div>
+          </div>
+        `).join("");
+      },
+
+      alerts(){
+        const alerts = [];
+        if(!State.orgs.length) alerts.push(["Nenhuma empresa","Crie uma empresa para começar."]);
+        if(State.farms.length===0) alerts.push(["Cadastre fazendas","Sem fazendas não há talhões/aplicações."]);
+        if(State.fields.length===0) alerts.push(["Cadastre talhões","Sem talhões não há rastreabilidade por área."]);
+        if(State.products.length===0) alerts.push(["Cadastre produtos","Itens da calda e compliance ficam completos."]);
+        if(State.apps.some(a => Number(a.area_applied_ha||0)<=0)) alerts.push(["Aplicações com área 0","Área é essencial para custo/ha confiável."]);
+        if(State.apps.some(a => a.wind_ms==null || a.temperature_c==null || a.humidity_pct==null)) alerts.push(["Clima incompleto","Vento/Temp/UR melhoram auditoria e segurança."]);
+
+        const box = $("#alertsBox");
+        if(!alerts.length){
+          box.innerHTML = `<span class="chip"><span class="dot"></span> Tudo certo — sem alertas críticos</span>`;
+          return;
+        }
+        box.innerHTML = alerts.map(a=>`
+          <div class="card" style="background: rgba(7,10,18,.20); margin-bottom:10px;">
+            <div class="cardBody">
+              <div style="font-weight:900;font-family:Manrope;">${UI.escape(a[0])}</div>
+              <div class="tmuted">${UI.escape(a[1])}</div>
+            </div>
+          </div>
+        `).join("");
+      },
+
+      orgList(){
+        const q = ($("#orgSearch").value || "").toLowerCase();
+        const list = State.orgs.filter(o => (o.org_name||"").toLowerCase().includes(q));
+        $("#orgCount").textContent = `${list.length} empresas`;
+
+        const box = $("#orgList");
+        if(!list.length){
+          box.innerHTML = `<div class="tmuted">Nenhuma empresa encontrada. Crie uma para começar.</div>`;
+          return;
+        }
+        box.innerHTML = list.map(o=>{
+          const active = o.org_id === State.activeOrgId;
+          return `
+            <div class="card" style="background: rgba(7,10,18,.20); margin-bottom:10px;">
+              <div class="cardBody" style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+                <div>
+                  <div style="font-weight:900;font-family:Manrope;">${UI.escape(o.org_name)}</div>
+                  <div class="tmuted">Role: <b>${UI.escape(o.role)}</b> • ${active ? "<span class='ok'>Ativa</span>" : "—"}</div>
+                </div>
+                <button class="btn ${active ? "primary" : ""}" data-pick-org="${o.org_id}">${active ? "Selecionada" : "Usar"}</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+      },
+
+      filters(){
+        const optAll = (t)=> `<option value="">${t}</option>`;
+        const farms = State.farms.slice();
+
+        $("#fieldFarmFilter").innerHTML = optAll("Todas as fazendas") + farms.map(f=>`<option value="${f.id}">${UI.escape(f.name)}</option>`).join("");
+        $("#appsFarmFilter").innerHTML = optAll("Todas as fazendas") + farms.map(f=>`<option value="${f.id}">${UI.escape(f.name)}</option>`).join("");
+
+        const farmFilter = $("#appsFarmFilter").value;
+        const fieldsFiltered = State.fields.filter(t => !farmFilter || t.farm_id===farmFilter);
+        $("#appsFieldFilter").innerHTML = optAll("Todos os talhões") + fieldsFiltered.map(t=>`<option value="${t.id}">${UI.escape((t.code? t.code+" — ":"")+t.name)}</option>`).join("");
+
+        $("#field_farm").innerHTML = farms.map(f=>`<option value="${f.id}">${UI.escape(f.name)}</option>`).join("");
+        $("#app_farm").innerHTML = farms.map(f=>`<option value="${f.id}">${UI.escape(f.name)}</option>`).join("");
+
+        const chosenFarm = $("#app_farm").value || farms[0]?.id || "";
+        const appFields = State.fields.filter(t=> t.farm_id===chosenFarm);
+        $("#app_field").innerHTML = appFields.map(t=>`<option value="${t.id}">${UI.escape((t.code? t.code+" — ":"")+t.name)}</option>`).join("");
+
+        $("#app_equip").innerHTML = `<option value="">(sem equipamento)</option>` + State.equipment.map(e=>`<option value="${e.id}">${UI.escape(e.name)}</option>`).join("");
+
+        $("#item_product").innerHTML = State.products.map(p=>`<option value="${p.id}">${UI.escape(p.name)}</option>`).join("");
+      },
+
+      farms(){
+        const q = ($("#farmSearch").value || "").toLowerCase();
+        const rows = State.farms.filter(f => !q || ((f.name||"")+" "+(f.city||"")+" "+(f.state||"")).toLowerCase().includes(q));
+        $("#farmCount").textContent = `${rows.length} registros`;
+
+        const tb = $("#farmTbody");
+        if(!rows.length){
+          tb.innerHTML = `<tr><td colspan="4" class="tmuted">Sem fazendas. Clique em “Nova fazenda”.</td></tr>`;
+          return;
+        }
+        tb.innerHTML = rows.map(f=>{
+          const loc = [f.city, f.state].filter(Boolean).join(" / ") || "—";
+          return `
+            <tr>
+              <td>
+                <div style="font-weight:900;font-family:Manrope;">${UI.escape(f.name)}</div>
+                <div class="tmuted mono">${UI.escape(f.id.slice(0,8))}…</div>
+              </td>
+              <td>${UI.escape(loc)}</td>
+              <td class="tmuted">${UI.escape(f.notes||"")}</td>
+              <td>
+                <div class="row" style="gap:8px;">
+                  <button class="btn" data-edit-farm="${f.id}">Editar</button>
+                  <button class="btn bad" data-del-farm="${f.id}">Excluir</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      },
+
+      fields(){
+        const farmId = $("#fieldFarmFilter").value;
+        const q = ($("#fieldSearch").value || "").toLowerCase();
+        const rows = State.fields
+          .filter(t => !farmId || t.farm_id===farmId)
+          .filter(t => !q || ((t.code||"")+" "+(t.name||"")+" "+(t.variety||"")).toLowerCase().includes(q));
+
+        $("#fieldCount").textContent = `${rows.length} registros`;
+
+        const tb = $("#fieldTbody");
+        if(!rows.length){
+          tb.innerHTML = `<tr><td colspan="6" class="tmuted">Sem talhões. Clique em “Novo talhão”.</td></tr>`;
+          return;
+        }
+        tb.innerHTML = rows.map(t=>{
+          const farm = State.farms.find(f=>f.id===t.farm_id)?.name || "—";
+          const title = (t.code ? `<b>${UI.escape(t.code)}</b> — ` : "") + UI.escape(t.name);
+          return `
+            <tr>
+              <td>
+                <div style="font-weight:900;font-family:Manrope;">${title}</div>
+                <div class="tmuted">Cultura: ${UI.escape(t.crop||"soja")}</div>
+              </td>
+              <td>${UI.escape(farm)}</td>
+              <td><b>${fmt.num(t.area_ha,2)}</b> <span class="tmuted">ha</span></td>
+              <td>${UI.escape(t.variety||"—")}</td>
+              <td>${UI.escape(t.planting_date||"—")}</td>
+              <td>
+                <div class="row" style="gap:8px;">
+                  <button class="btn" data-edit-field="${t.id}">Editar</button>
+                  <button class="btn bad" data-del-field="${t.id}">Excluir</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      },
+
+      products(){
+        const q = ($("#productSearch").value || "").toLowerCase();
+        const rows = State.products.filter(p => !q || ((p.name||"")+" "+(p.active_ingredient||"")+" "+(p.product_class||"")).toLowerCase().includes(q));
+        $("#productCount").textContent = `${rows.length} registros`;
+
+        const tb = $("#productTbody");
+        if(!rows.length){
+          tb.innerHTML = `<tr><td colspan="5" class="tmuted">Sem produtos. Clique em “Novo produto”.</td></tr>`;
+          return;
+        }
+        tb.innerHTML = rows.map(p=>{
+          const phi = p.phi_days==null ? "—" : `${p.phi_days}d`;
+          const rei = p.rei_hours==null ? "—" : `${p.rei_hours}h`;
+          return `
+            <tr>
+              <td>
+                <div style="font-weight:900;font-family:Manrope;">${UI.escape(p.name)}</div>
+                <div class="tmuted">${UI.escape(p.manufacturer||"")}</div>
+              </td>
+              <td class="tmuted">${UI.escape(p.active_ingredient||"—")}</td>
+              <td>${UI.escape(p.product_class||"—")}</td>
+              <td><span class="chip">PHI ${UI.escape(phi)}</span> <span class="chip">REI ${UI.escape(rei)}</span></td>
+              <td>
+                <div class="row" style="gap:8px;">
+                  <button class="btn" data-edit-product="${p.id}">Editar</button>
+                  <button class="btn bad" data-del-product="${p.id}">Excluir</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      },
+
+      equipment(){
+        const q = ($("#equipSearch").value || "").toLowerCase();
+        const rows = State.equipment.filter(e => !q || ((e.name||"")+" "+(e.type||"")+" "+(e.nozzle||"")).toLowerCase().includes(q));
+        $("#equipCount").textContent = `${rows.length} registros`;
+
+        const tb = $("#equipTbody");
+        if(!rows.length){
+          tb.innerHTML = `<tr><td colspan="5" class="tmuted">Sem equipamentos. Clique em “Novo equipamento”.</td></tr>`;
+          return;
+        }
+        tb.innerHTML = rows.map(e=>{
+          const flow = e.flow_rate_l_min==null ? "—" : `${fmt.num(e.flow_rate_l_min,3)} L/min`;
+          const noz = e.nozzle ? UI.escape(e.nozzle) : "—";
+          return `
+            <tr>
+              <td>
+                <div style="font-weight:900;font-family:Manrope;">${UI.escape(e.name)}</div>
+                <div class="tmuted mono">${UI.escape(e.id.slice(0,8))}…</div>
+              </td>
+              <td>${UI.escape(e.type||"—")}</td>
+              <td class="tmuted">${noz} • ${flow}</td>
+              <td>${UI.escape(e.last_calibration||"—")}</td>
+              <td>
+                <div class="row" style="gap:8px;">
+                  <button class="btn" data-edit-equip="${e.id}">Editar</button>
+                  <button class="btn bad" data-del-equip="${e.id}">Excluir</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      },
+
+      apps(){
+        const farmId = $("#appsFarmFilter").value;
+        const fieldId = $("#appsFieldFilter").value;
+        const q = ($("#appsSearch").value || "").toLowerCase();
+
+        const rows = State.apps
+          .filter(a => !farmId || a.farm_id===farmId)
+          .filter(a => !fieldId || a.field_id===fieldId)
+          .filter(a=>{
+            if(!q) return true;
+            const farm = State.farms.find(f=>f.id===a.farm_id)?.name || "";
+            const field = State.fields.find(t=>t.id===a.field_id);
+            const tname = field ? ((field.code||"")+" "+(field.name||"")) : "";
+            return (farm+" "+tname+" "+(a.notes||"")).toLowerCase().includes(q);
+          });
+
+        $("#appsCount").textContent = `${rows.length} registros`;
+
+        const tb = $("#appsTbody");
+        if(!rows.length){
+          tb.innerHTML = `<tr><td colspan="7" class="tmuted">Sem aplicações. Clique em “Nova aplicação”.</td></tr>`;
+          return;
+        }
+
+        tb.innerHTML = rows.map(a=>{
+          const farm = State.farms.find(f=>f.id===a.farm_id)?.name || "—";
+          const field = State.fields.find(t=>t.id===a.field_id);
+          const fieldLabel = field ? ((field.code? field.code+" — ":"")+field.name) : "—";
+          const typeLabel = a.application_type==="aerial" ? "Aérea" : a.application_type==="drone" ? "Drone" : "Terrestre";
+          const clima = [
+            a.wind_ms!=null ? `V ${fmt.num(a.wind_ms,1)}` : null,
+            a.temperature_c!=null ? `T ${fmt.num(a.temperature_c,1)}°C` : null,
+            a.humidity_pct!=null ? `UR ${fmt.num(a.humidity_pct,0)}%` : null,
+          ].filter(Boolean).join(" • ") || "—";
+
+          return `
+            <tr>
+              <td>
+                <div style="font-weight:900;font-family:Manrope;">${UI.escape(fmt.dt(a.applied_at))}</div>
+                <div class="tmuted mono">${UI.escape(a.id.slice(0,8))}…</div>
+              </td>
+              <td>
+                <div style="font-weight:800;">${UI.escape(farm)}</div>
+                <div class="tmuted">${UI.escape(fieldLabel)}</div>
+              </td>
+              <td><span class="chip">${UI.escape(typeLabel)}</span></td>
+              <td><b>${fmt.num(a.area_applied_ha,2)}</b> <span class="tmuted">ha</span></td>
+              <td>
+                <b>${fmt.money(a.total_cost||0)}</b>
+                <div class="tmuted">${fmt.money(a.cost_per_ha||0)} /ha</div>
+              </td>
+              <td class="tmuted">${UI.escape(clima)}</td>
+              <td>
+                <div class="row" style="gap:8px;">
+                  <button class="btn" data-open-app="${a.id}">Abrir</button>
+                  <button class="btn bad" data-del-app="${a.id}">Excluir</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      },
+
+      items(){
+        const tb = $("#itemTbody");
+        if(!State.currentAppId){
+          tb.innerHTML = `<tr><td colspan="6" class="tmuted">Salve a aplicação para adicionar itens.</td></tr>`;
+          return;
+        }
+        if(!State.appItems.length){
+          tb.innerHTML = `<tr><td colspan="6" class="tmuted">Sem itens. Clique em “Adicionar item”.</td></tr>`;
+          return;
+        }
+        tb.innerHTML = State.appItems.map(it=>{
+          const prod = State.products.find(p=>p.id===it.product_id)?.name || "—";
+          const dose = `${fmt.num(it.dose_per_ha,4)} ${UI.escape(it.unit||"")}`;
+          const total = `${fmt.num(it.total_quantity,4)}`;
+          const lot = it.batch_lot ? UI.escape(it.batch_lot) : "—";
+          return `
+            <tr>
+              <td><b>${UI.escape(prod)}</b></td>
+              <td class="tmuted">${dose}</td>
+              <td class="tmuted">${total}</td>
+              <td class="tmuted">${lot}</td>
+              <td><b>${fmt.money(it.item_cost||0)}</b></td>
+              <td>
+                <div class="row" style="gap:8px;">
+                  <button class="btn" data-edit-item="${it.id}">Editar</button>
+                  <button class="btn bad" data-del-item="${it.id}">Excluir</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      },
+
+      team(){
+        const q = ($("#teamSearch").value || "").toLowerCase();
+        const rows = (State.orgMembers || []).filter(m => !q || (m.user_id||"").toLowerCase().includes(q) || (m.role||"").toLowerCase().includes(q));
+        $("#teamCount").textContent = `${rows.length} membros`;
+
+        const tb = $("#teamTbody");
+        if(!rows.length){
+          tb.innerHTML = `<tr><td colspan="4" class="tmuted">Sem permissão para listar ou sem membros.</td></tr>`;
+          return;
+        }
+        tb.innerHTML = rows.map(m=>{
+          const isMe = m.user_id === State.user?.id;
+          return `
+            <tr>
+              <td>
+                <div style="font-weight:900;font-family:Manrope;">${isMe ? "Você" : "Usuário"}</div>
+                <div class="tmuted mono">${UI.escape(m.user_id)}</div>
+              </td>
+              <td><span class="chip">${UI.escape(m.role)}</span></td>
+              <td>${m.active ? "<span class='ok'>Ativo</span>" : "<span class='warn'>Inativo</span>"}</td>
+              <td>${isMe ? "<span class='tmuted'>—</span>" : `<button class="btn bad" data-remove-member="${m.user_id}">Remover</button>`}</td>
+            </tr>
+          `;
+        }).join("");
+      },
+
+      invites(){
+        const tb = $("#inviteTbody");
+        if(!State.invites?.length){
+          tb.innerHTML = `<tr><td colspan="5" class="tmuted">Sem convites (ou sem permissão).</td></tr>`;
+          return;
+        }
+        tb.innerHTML = State.invites.map(i=>`
+          <tr>
+            <td><b>${UI.escape(i.email)}</b></td>
+            <td><span class="chip">${UI.escape(i.role)}</span></td>
+            <td>${UI.escape(i.status)}</td>
+            <td class="tmuted">${UI.escape(new Date(i.expires_at).toLocaleString("pt-BR"))}</td>
+            <td class="mono">${UI.escape(i.code)}</td>
+          </tr>
+        `).join("");
+      }
+    };
+
+    // ===========================
+    // Modals open helpers
+    // ===========================
+    const setVal = (id,v)=> { $("#"+id).value = v ?? ""; };
+    const getVal = (id)=> $("#"+id).value;
+
+    function openFarmModal(id=null){
+      $("#farmModalTitle").textContent = id ? "Editar fazenda" : "Nova fazenda";
+      setVal("farm_id",""); setVal("farm_name",""); setVal("farm_city",""); setVal("farm_state",""); setVal("farm_notes","");
+      if(id){
+        const f = State.farms.find(x=>x.id===id);
+        if(!f) return UI.toast("Registro não encontrado");
+        setVal("farm_id", f.id);
+        setVal("farm_name", f.name);
+        setVal("farm_city", f.city);
+        setVal("farm_state", (f.state||"").toUpperCase());
+        setVal("farm_notes", f.notes);
+      }
+      UI.open("farmModal");
+    }
+
+    function openFieldModal(id=null){
+      $("#fieldModalTitle").textContent = id ? "Editar talhão" : "Novo talhão";
+      setVal("field_id",""); setVal("field_code",""); setVal("field_name",""); setVal("field_area",""); setVal("field_crop","soja");
+      setVal("field_variety",""); setVal("field_planting",""); setVal("field_notes","");
+      Render.filters();
+      if(id){
+        const t = State.fields.find(x=>x.id===id);
+        if(!t) return UI.toast("Registro não encontrado");
+        setVal("field_id", t.id);
+        setVal("field_farm", t.farm_id);
+        setVal("field_code", t.code);
+        setVal("field_name", t.name);
+        setVal("field_area", t.area_ha);
+        setVal("field_crop", t.crop||"soja");
+        setVal("field_variety", t.variety);
+        setVal("field_planting", t.planting_date);
+        setVal("field_notes", t.notes);
+      }
+      UI.open("fieldModal");
+    }
+
+    function openProductModal(id=null){
+      $("#productModalTitle").textContent = id ? "Editar produto" : "Novo produto";
+      setVal("product_id",""); setVal("product_name",""); setVal("product_ai",""); setVal("product_class","");
+      setVal("product_phi",""); setVal("product_rei",""); setVal("product_mfg",""); setVal("product_reg",""); setVal("product_notes","");
+      if(id){
+        const p = State.products.find(x=>x.id===id);
+        if(!p) return UI.toast("Registro não encontrado");
+        setVal("product_id", p.id);
+        setVal("product_name", p.name);
+        setVal("product_ai", p.active_ingredient);
+        setVal("product_class", p.product_class);
+        setVal("product_phi", p.phi_days ?? "");
+        setVal("product_rei", p.rei_hours ?? "");
+        setVal("product_mfg", p.manufacturer);
+        setVal("product_reg", p.registration);
+        setVal("product_notes", p.notes);
+      }
+      UI.open("productModal");
+    }
+
+    function openEquipModal(id=null){
+      $("#equipModalTitle").textContent = id ? "Editar equipamento" : "Novo equipamento";
+      setVal("equip_id",""); setVal("equip_name",""); setVal("equip_type",""); setVal("equip_nozzle","");
+      setVal("equip_flow",""); setVal("equip_calib",""); setVal("equip_notes","");
+      if(id){
+        const e = State.equipment.find(x=>x.id===id);
+        if(!e) return UI.toast("Registro não encontrado");
+        setVal("equip_id", e.id);
+        setVal("equip_name", e.name);
+        setVal("equip_type", e.type);
+        setVal("equip_nozzle", e.nozzle);
+        setVal("equip_flow", e.flow_rate_l_min ?? "");
+        setVal("equip_calib", e.last_calibration ?? "");
+        setVal("equip_notes", e.notes);
+      }
+      UI.open("equipModal");
+    }
+
+    async function openAppModal(appId=null){
+      $("#appModalTitle").textContent = appId ? "Editar aplicação" : "Nova aplicação";
+      State.currentAppId = appId;
+
+      setVal("app_id",""); setVal("app_type","terrestrial");
+      setVal("app_applied_at", toLocalDT(new Date()));
+      setVal("app_area",""); setVal("app_spray",""); setVal("app_speed",""); setVal("app_pressure","");
+      setVal("app_equip",""); setVal("app_wind",""); setVal("app_temp",""); setVal("app_hum",""); setVal("app_notes","");
+
+      Render.filters();
+
+      if(appId){
+        const a = State.apps.find(x=>x.id===appId);
+        if(!a) return UI.toast("Aplicação não encontrada");
+        setVal("app_id", a.id);
+        setVal("app_farm", a.farm_id);
+        Render.filters();
+        setVal("app_field", a.field_id);
+        setVal("app_type", a.application_type || "terrestrial");
+        setVal("app_applied_at", toLocalDT(a.applied_at));
+        setVal("app_area", a.area_applied_ha ?? "");
+        setVal("app_spray", a.spray_volume_l_ha ?? "");
+        setVal("app_speed", a.speed_kmh ?? "");
+        setVal("app_pressure", a.pressure_bar ?? "");
+        setVal("app_equip", a.equipment_id ?? "");
+        setVal("app_wind", a.wind_ms ?? "");
+        setVal("app_temp", a.temperature_c ?? "");
+        setVal("app_hum", a.humidity_pct ?? "");
+        setVal("app_notes", a.notes ?? "");
+      }else{
+        // choose defaults
+        const f0 = State.farms[0];
+        if(f0){
+          setVal("app_farm", f0.id);
+          Render.filters();
+          const t0 = State.fields.find(t=>t.farm_id===f0.id);
+          if(t0) setVal("app_field", t0.id);
+        }
+      }
+
+      State.appItems = [];
+      if(appId) await Data.loadItems(appId);
+      Render.items();
+      UI.open("appModal");
+    }
+
+    function openItemModal(itemId=null){
+      if(!State.currentAppId) return UI.toast("Salve a aplicação primeiro");
+      $("#itemModalTitle").textContent = itemId ? "Editar item" : "Novo item";
+      setVal("item_id",""); setVal("item_dose",""); setVal("item_unit","L/ha"); setVal("item_total",""); setVal("item_lot",""); setVal("item_cost","");
+      Render.filters();
+      if(itemId){
+        const it = State.appItems.find(x=>x.id===itemId);
+        if(!it) return UI.toast("Item não encontrado");
+        setVal("item_id", it.id);
+        setVal("item_product", it.product_id);
+        setVal("item_dose", it.dose_per_ha ?? "");
+        setVal("item_unit", it.unit ?? "L/ha");
+        setVal("item_total", it.total_quantity ?? "");
+        setVal("item_lot", it.batch_lot ?? "");
+        setVal("item_cost", it.item_cost ?? "");
+      }
+      UI.open("itemModal");
+    }
+
+    // ===========================
+    // Relatório (print -> PDF)
+    // ===========================
+    function openReport(appId){
+      const a = State.apps.find(x=>x.id===appId);
+      if(!a) return UI.toast("Aplicação não encontrada");
+
+      const farm = State.farms.find(f=>f.id===a.farm_id)?.name || "—";
+      const field = State.fields.find(t=>t.id===a.field_id);
+      const fieldLabel = field ? ((field.code? field.code+" — ":"")+field.name) : "—";
+      const equip = State.equipment.find(e=>e.id===a.equipment_id)?.name || "—";
+      const typeLabel = a.application_type==="aerial" ? "Aérea" : a.application_type==="drone" ? "Drone" : "Terrestre";
+      const clima = [
+        a.wind_ms!=null ? `Vento: ${fmt.num(a.wind_ms,1)} m/s` : "Vento: —",
+        a.temperature_c!=null ? `Temp: ${fmt.num(a.temperature_c,1)} °C` : "Temp: —",
+        a.humidity_pct!=null ? `UR: ${fmt.num(a.humidity_pct,0)} %` : "UR: —"
+      ].join(" | ");
+
+      const itemsHtml = (State.appItems||[]).map(it=>{
+        const prod = State.products.find(p=>p.id===it.product_id)?.name || "—";
+        return `
+          <tr>
+            <td>${UI.escape(prod)}</td>
+            <td>${fmt.num(it.dose_per_ha,4)} ${UI.escape(it.unit||"")}</td>
+            <td>${fmt.num(it.total_quantity,4)}</td>
+            <td>${UI.escape(it.batch_lot||"—")}</td>
+            <td style="text-align:right">${fmt.money(it.item_cost||0)}</td>
+          </tr>
+        `;
+      }).join("") || `<tr><td colspan="5">Sem itens</td></tr>`;
+
+      const html = `<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Relatório de Aplicação</title>
+<style>
+  body{ font-family: Inter, Arial; margin:24px; color:#111; }
+  h1{ margin:0; font-size:20px; }
+  .sub{ color:#444; margin-top:6px; font-size:12px; }
+  .box{ border:1px solid #ddd; border-radius:12px; padding:12px; margin-top:12px; }
+  .grid{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+  .k{ color:#555; font-size:12px; }
+  .v{ font-weight:700; margin-top:2px; }
+  table{ width:100%; border-collapse: collapse; margin-top:10px; }
+  th,td{ border-bottom:1px solid #eee; padding:8px; font-size:12px; text-align:left; }
+  th{ color:#555; }
+  @media print{ body{ margin:0; } }
+</style>
+</head><body>
+<h1>Relatório de Aplicação — AgroChem Control</h1>
+<div class="sub">ID: ${a.id} • Emitido em: ${new Date().toLocaleString("pt-BR")}</div>
+
+<div class="box grid">
+  <div><div class="k">Fazenda</div><div class="v">${UI.escape(farm)}</div></div>
+  <div><div class="k">Talhão</div><div class="v">${UI.escape(fieldLabel)}</div></div>
+  <div><div class="k">Data/Hora</div><div class="v">${UI.escape(fmt.dt(a.applied_at))}</div></div>
+  <div><div class="k">Tipo</div><div class="v">${UI.escape(typeLabel)}</div></div>
+  <div><div class="k">Área aplicada</div><div class="v">${fmt.num(a.area_applied_ha,2)} ha</div></div>
+  <div><div class="k">Equipamento</div><div class="v">${UI.escape(equip)}</div></div>
+  <div><div class="k">Operação</div><div class="v">Calda ${fmt.num(a.spray_volume_l_ha||0,2)} L/ha • Vel ${fmt.num(a.speed_kmh||0,2)} km/h • Press ${fmt.num(a.pressure_bar||0,2)} bar</div></div>
+  <div><div class="k">Clima</div><div class="v">${UI.escape(clima)}</div></div>
+</div>
+
+<div class="box">
+  <div class="k">Observações</div>
+  <div class="v" style="font-weight:500;">${UI.escape(a.notes||"—")}</div>
+</div>
+
+<div class="box">
+  <div style="font-weight:700;">Itens da calda</div>
+  <table>
+    <thead><tr><th>Produto</th><th>Dose</th><th>Total</th><th>Lote</th><th style="text-align:right">Custo</th></tr></thead>
+    <tbody>${itemsHtml}</tbody>
+  </table>
+  <div style="margin-top:10px; display:flex; justify-content:space-between;">
+    <div class="k">Custo total</div><div class="v">${fmt.money(a.total_cost||0)}</div>
+  </div>
+  <div style="margin-top:4px; display:flex; justify-content:space-between;">
+    <div class="k">Custo por ha</div><div class="v">${fmt.money(a.cost_per_ha||0)} /ha</div>
+  </div>
+</div>
+
+<div class="sub">Para salvar em PDF: imprimir → “Salvar como PDF”.</div>
+<script>window.onload=()=>window.print();<\/script>
+</body></html>`;
+
+      const w = window.open("", "_blank");
+      if(!w) return UI.toast("Bloqueio de pop-up", "Permita pop-ups para gerar relatório");
+      w.document.open();
+      w.document.write(html);
+      w.document.close();
+    }
+
+    // ===========================
+    // Events
+    // ===========================
+    function wire(){
+      // Navigation
+      $$(".navBtn").forEach(btn=>{
+        btn.addEventListener("click", ()=> Views.show(btn.dataset.view));
+      });
+
+      // Close modals (data-close)
+      document.addEventListener("click", (e)=>{
+        const closeId = e.target?.dataset?.close;
+        if(closeId) UI.close(closeId);
+      });
+
+      // Close on overlay click
+      $$(".overlay").forEach(ov=>{
+        ov.addEventListener("click", (ev)=>{ if(ev.target===ov) ov.classList.remove("show"); });
+      });
+
+      // Org picker
+      $("#btnOrgPicker").addEventListener("click", ()=>{ Render.orgList(); UI.open("orgModal"); });
+      $("#btnQuickNewOrg").addEventListener("click", ()=>{ Render.orgList(); UI.open("orgModal"); });
+      $("#orgSearch").addEventListener("input", Render.orgList);
+
+      $("#orgList").addEventListener("click", async (e)=>{
+        const id = e.target?.dataset?.pickOrg;
+        if(!id) return;
+        try{
+          State.activeOrgId = id;
+          await RPC.setActiveOrg(id);
+          localStorage.setItem("agrochem_active_org", id);
+          const org = State.orgs.find(o=>o.org_id===id);
+          $("#activeOrgName").textContent = org?.org_name || "—";
+          $("#activeOrgRole").textContent = org ? `Role: ${org.role}` : "—";
+          UI.close("orgModal");
+          UI.toast("Empresa ativa definida");
+          await Data.reloadOrgScope();
+        }catch(err){
+          UI.toast("Erro ao trocar empresa", err.message || String(err));
+        }
+      });
+
+      $("#btnCreateOrg").addEventListener("click", async ()=>{
+        try{
+          const name = prompt("Nome da empresa:");
+          if(!name) return;
+          const cnpj = prompt("CNPJ (opcional):") || null;
+          await RPC.createOrg(name.trim(), cnpj);
+          UI.toast("Empresa criada", name);
+          await Data.loadAll();
+          UI.close("orgModal");
+        }catch(err){
+          UI.toast("Erro ao criar empresa", err.message || String(err));
+        }
+      });
+
+      // Auth
+      $("#authForm").addEventListener("submit", async (e)=>{
+        e.preventDefault();
+        try{
+          const email = $("#authEmail").value.trim();
+          const password = $("#authPass").value;
+          const { error } = await State.supa.auth.signInWithPassword({ email, password });
+          if(error) throw error;
+          UI.toast("Login OK");
+          await Data.loadAll();
+        }catch(err){
+          UI.toast("Falha no login", err.message || String(err));
+        }
+      });
+      $("#btnSignUp").addEventListener("click", async ()=>{
+        try{
+          const email = $("#authEmail").value.trim();
+          const password = $("#authPass").value;
+          const { error } = await State.supa.auth.signUp({ email, password });
+          if(error) throw error;
+          UI.toast("Conta criada", "Agora faça login");
+        }catch(err){
+          UI.toast("Falha ao criar conta", err.message || String(err));
+        }
+      });
+
+      // Logout
+      $("#btnLogout").addEventListener("click", async ()=>{
+        try{ await State.supa.auth.signOut(); } catch{}
+        State.user = null;
+        State.orgs = [];
+        State.activeOrgId = null;
+        UI.toast("Saiu");
+        UI.showAuth(true);
+      });
+
+      // Settings
+      $("#btnCheckConn").addEventListener("click", async ()=>{
+        try{
+          const { error } = await State.supa.from("organizations").select("id").limit(1);
+          if(error) throw error;
+          UI.toast("Conexão OK");
+        }catch(err){
+          UI.toast("Falha na conexão", err.message || String(err));
+        }
+      });
+      $("#btnReload").addEventListener("click", async ()=>{
+        UI.toast("Recarregando...");
+        await Data.loadAll();
+      });
+
+      // Quick new app
+      $("#btnQuickNewApp").addEventListener("click", async ()=>{
+        if(!requireOrg()) return;
+        Views.show("apps");
+        await openAppModal(null);
+      });
+
+      // Filters inputs
+      $("#farmSearch").addEventListener("input", Render.farms);
+      $("#fieldSearch").addEventListener("input", Render.fields);
+      $("#fieldFarmFilter").addEventListener("change", Render.fields);
+
+      $("#productSearch").addEventListener("input", Render.products);
+      $("#equipSearch").addEventListener("input", Render.equipment);
+
+      $("#appsSearch").addEventListener("input", Render.apps);
+      $("#appsFarmFilter").addEventListener("change", ()=>{ Render.filters(); Render.apps(); });
+      $("#appsFieldFilter").addEventListener("change", Render.apps);
+
+      $("#teamSearch").addEventListener("input", Render.team);
+
+      // New buttons
+      $("#btnNewFarm").addEventListener("click", ()=> requireOrg() && openFarmModal(null));
+      $("#btnNewField").addEventListener("click", ()=> requireOrg() && openFieldModal(null));
+      $("#btnNewProduct").addEventListener("click", ()=> requireOrg() && openProductModal(null));
+      $("#btnNewEquip").addEventListener("click", ()=> requireOrg() && openEquipModal(null));
+      $("#btnNewApp").addEventListener("click", ()=> requireOrg() && openAppModal(null));
+
+      // Dependent select
+      $("#app_farm").addEventListener("change", ()=> Render.filters());
+
+      // Forms submit
+      $("#farmForm").addEventListener("submit", async (e)=>{
+        e.preventDefault();
+        if(!requireOrg()) return;
+        try{
+          const payload = {
+            id: getVal("farm_id") || undefined,
+            name: getVal("farm_name"),
+            city: getVal("farm_city"),
+            state: (getVal("farm_state")||"").toUpperCase(),
+            notes: getVal("farm_notes")
+          };
+          await Data.upsertFarm(payload);
+          UI.toast("Fazenda salva");
+          UI.close("farmModal");
+          await Data.reloadOrgScope();
+        }catch(err){
+          UI.toast("Erro ao salvar fazenda", err.message || String(err));
+        }
+      });
+
+      $("#fieldForm").addEventListener("submit", async (e)=>{
+        e.preventDefault();
+        if(!requireOrg()) return;
+        try{
+          const payload = {
+            id: getVal("field_id") || undefined,
+            farm_id: getVal("field_farm"),
+            code: getVal("field_code"),
+            name: getVal("field_name"),
+            area_ha: Number(getVal("field_area")||0),
+            crop: getVal("field_crop") || "soja",
+            variety: getVal("field_variety"),
+            planting_date: getVal("field_planting") || null,
+            notes: getVal("field_notes")
+          };
+          await Data.upsertField(payload);
+          UI.toast("Talhão salvo");
+          UI.close("fieldModal");
+          await Data.reloadOrgScope();
+        }catch(err){
+          UI.toast("Erro ao salvar talhão", err.message || String(err));
+        }
+      });
+
+      $("#productForm").addEventListener("submit", async (e)=>{
+        e.preventDefault();
+        if(!requireOrg()) return;
+        try{
+          const payload = {
+            id: getVal("product_id") || undefined,
+            name: getVal("product_name"),
+            active_ingredient: getVal("product_ai"),
+            product_class: getVal("product_class"),
+            phi_days: getVal("product_phi")==="" ? null : Number(getVal("product_phi")),
+            rei_hours: getVal("product_rei")==="" ? null : Number(getVal("product_rei")),
+            manufacturer: getVal("product_mfg"),
+            registration: getVal("product_reg"),
+            notes: getVal("product_notes")
+          };
+          await Data.upsertProduct(payload);
+          UI.toast("Produto salvo");
+          UI.close("productModal");
+          await Data.reloadOrgScope();
+        }catch(err){
+          UI.toast("Erro ao salvar produto", err.message || String(err));
+        }
+      });
+
+      $("#equipForm").addEventListener("submit", async (e)=>{
+        e.preventDefault();
+        if(!requireOrg()) return;
+        try{
+          const payload = {
+            id: getVal("equip_id") || undefined,
+            name: getVal("equip_name"),
+            type: getVal("equip_type"),
+            nozzle: getVal("equip_nozzle"),
+            flow_rate_l_min: getVal("equip_flow")==="" ? null : Number(getVal("equip_flow")),
+            last_calibration: getVal("equip_calib") || null,
+            notes: getVal("equip_notes")
+          };
+          await Data.upsertEquip(payload);
+          UI.toast("Equipamento salvo");
+          UI.close("equipModal");
+          await Data.reloadOrgScope();
+        }catch(err){
+          UI.toast("Erro ao salvar equipamento", err.message || String(err));
+        }
+      });
+
+      $("#appForm").addEventListener("submit", async (e)=>{
+        e.preventDefault();
+        if(!requireOrg()) return;
+        try{
+          const payload = {
+            id: getVal("app_id") || undefined,
+            farm_id: getVal("app_farm"),
+            field_id: getVal("app_field"),
+            application_type: getVal("app_type"),
+            applied_at: toIsoFromLocalDT(getVal("app_applied_at")),
+            area_applied_ha: Number(getVal("app_area")||0),
+            spray_volume_l_ha: getVal("app_spray")==="" ? null : Number(getVal("app_spray")),
+            speed_kmh: getVal("app_speed")==="" ? null : Number(getVal("app_speed")),
+            pressure_bar: getVal("app_pressure")==="" ? null : Number(getVal("app_pressure")),
+            equipment_id: getVal("app_equip") || null,
+            wind_ms: getVal("app_wind")==="" ? null : Number(getVal("app_wind")),
+            temperature_c: getVal("app_temp")==="" ? null : Number(getVal("app_temp")),
+            humidity_pct: getVal("app_hum")==="" ? null : Number(getVal("app_hum")),
+            notes: getVal("app_notes")
+          };
+
+          const saved = await Data.upsertApp(payload);
+          State.currentAppId = saved.id;
+          setVal("app_id", saved.id);
+
+          UI.toast("Aplicação salva", "Agora adicione itens");
+          await Data.loadApps();              // puxa custo recalculado
+          await Data.loadItems(saved.id);     // itens
+          Render.apps();
+          Render.items();
+          await Data.refreshDashboard();
+        }catch(err){
+          UI.toast("Erro ao salvar aplicação", err.message || String(err));
+        }
+      });
+
+      // Items
+      $("#btnNewItem").addEventListener("click", ()=>{
+        if(!State.currentAppId) return UI.toast("Salve a aplicação primeiro");
+        if(!State.products.length) return UI.toast("Cadastre produtos antes");
+        openItemModal(null);
+      });
+
+      $("#itemForm").addEventListener("submit", async (e)=>{
+        e.preventDefault();
+        if(!State.currentAppId) return UI.toast("Salve a aplicação primeiro");
+        try{
+          const app = State.apps.find(x=>x.id===State.currentAppId);
+          const area = Number(app?.area_applied_ha||0);
+
+          const dose = Number(getVal("item_dose")||0);
+          const totalInput = getVal("item_total");
+          const total = totalInput==="" ? (dose * area) : Number(totalInput||0);
+
+          const payload = {
+            id: getVal("item_id") || undefined,
+            application_id: State.currentAppId,
+            product_id: getVal("item_product"),
+            dose_per_ha: dose,
+            unit: getVal("item_unit") || "L/ha",
+            total_quantity: total,
+            batch_lot: getVal("item_lot"),
+            item_cost: getVal("item_cost")==="" ? 0 : Number(getVal("item_cost")),
+          };
+
+          await Data.upsertItem(payload);
+          UI.toast("Item salvo");
+          UI.close("itemModal");
+
+          // reload (para pegar custo recalculado)
+          await Data.loadItems(State.currentAppId);
+          await Data.loadApps();
+          Render.apps();
+          Render.items();
+          await Data.refreshDashboard();
+        }catch(err){
+          UI.toast("Erro ao salvar item", err.message || String(err));
+        }
+      });
+
+      // Report
+      $("#btnAppReport").addEventListener("click", async ()=>{
+        if(!State.currentAppId) return UI.toast("Abra uma aplicação salva");
+        await Data.loadItems(State.currentAppId);
+        openReport(State.currentAppId);
+      });
+
+      // Invite
+      $("#btnInvite").addEventListener("click", ()=>{
+        if(!requireOrg()) return;
+        $("#invite_code").textContent = "—";
+        $("#invite_email").value = "";
+        $("#invite_role").value = "applicator";
+        UI.open("inviteModal");
+      });
+
+      $("#btnAcceptInvite").addEventListener("click", ()=>{
+        $("#accept_code").value = "";
+        UI.open("acceptInviteModal");
+      });
+
+      $("#inviteForm").addEventListener("submit", async (e)=>{
+        e.preventDefault();
+        if(!requireOrg()) return;
+        try{
+          const code = await RPC.inviteMember(State.activeOrgId, $("#invite_email").value.trim(), $("#invite_role").value);
+          $("#invite_code").textContent = code;
+          UI.toast("Convite gerado", "Copie e envie o código");
+          await Data.loadInvites();
+          Render.invites();
+        }catch(err){
+          UI.toast("Erro ao convidar", err.message || String(err));
+        }
+      });
+
+      $("#btnCopyInvite").addEventListener("click", async ()=>{
+        const code = $("#invite_code").textContent;
+        if(!code || code==="—") return UI.toast("Sem código");
+        try{
+          await navigator.clipboard.writeText(code);
+          UI.toast("Copiado");
+        }catch{
+          UI.toast("Não deu pra copiar", "Copie manualmente o código");
+        }
+      });
+
+      $("#acceptInviteForm").addEventListener("submit", async (e)=>{
+        e.preventDefault();
+        try{
+          const code = $("#accept_code").value.trim();
+          await RPC.acceptInvite(code);
+          UI.toast("Convite aceito", "Atualizando empresas...");
+          UI.close("acceptInviteModal");
+          await Data.loadAll();
+        }catch(err){
+          UI.toast("Erro ao aceitar", err.message || String(err));
+        }
+      });
+
+      // Table actions
+      $("#farmTbody").addEventListener("click", async (e)=>{
+        const edit = e.target?.dataset?.editFarm;
+        const del = e.target?.dataset?.delFarm;
+        if(edit) openFarmModal(edit);
+        if(del && confirm("Excluir fazenda?")){
+          try{ await Data.delFarm(del); UI.toast("Fazenda excluída"); await Data.reloadOrgScope(); }
+          catch(err){ UI.toast("Erro ao excluir", err.message || String(err)); }
+        }
+      });
+
+      $("#fieldTbody").addEventListener("click", async (e)=>{
+        const edit = e.target?.dataset?.editField;
+        const del = e.target?.dataset?.delField;
+        if(edit) openFieldModal(edit);
+        if(del && confirm("Excluir talhão?")){
+          try{ await Data.delField(del); UI.toast("Talhão excluído"); await Data.reloadOrgScope(); }
+          catch(err){ UI.toast("Erro ao excluir", err.message || String(err)); }
+        }
+      });
+
+      $("#productTbody").addEventListener("click", async (e)=>{
+        const edit = e.target?.dataset?.editProduct;
+        const del = e.target?.dataset?.delProduct;
+        if(edit) openProductModal(edit);
+        if(del && confirm("Excluir produto?")){
+          try{ await Data.delProduct(del); UI.toast("Produto excluído"); await Data.reloadOrgScope(); }
+          catch(err){ UI.toast("Erro ao excluir", err.message || String(err)); }
+        }
+      });
+
+      $("#equipTbody").addEventListener("click", async (e)=>{
+        const edit = e.target?.dataset?.editEquip;
+        const del = e.target?.dataset?.delEquip;
+        if(edit) openEquipModal(edit);
+        if(del && confirm("Excluir equipamento?")){
+          try{ await Data.delEquip(del); UI.toast("Equipamento excluído"); await Data.reloadOrgScope(); }
+          catch(err){ UI.toast("Erro ao excluir", err.message || String(err)); }
+        }
+      });
+
+      $("#appsTbody").addEventListener("click", async (e)=>{
+        const open = e.target?.dataset?.openApp;
+        const del = e.target?.dataset?.delApp;
+        if(open) await openAppModal(open);
+        if(del && confirm("Excluir aplicação?")){
+          try{ await Data.delApp(del); UI.toast("Aplicação excluída"); await Data.reloadOrgScope(); }
+          catch(err){ UI.toast("Erro ao excluir", err.message || String(err)); }
+        }
+      });
+
+      $("#itemTbody").addEventListener("click", async (e)=>{
+        const edit = e.target?.dataset?.editItem;
+        const del = e.target?.dataset?.delItem;
+        if(edit) openItemModal(edit);
+        if(del && confirm("Excluir item?")){
+          try{
+            await Data.delItem(del);
+            UI.toast("Item excluído");
+            await Data.loadItems(State.currentAppId);
+            await Data.loadApps();
+            Render.apps();
+            Render.items();
+            await Data.refreshDashboard();
+          }catch(err){
+            UI.toast("Erro ao excluir item", err.message || String(err));
+          }
+        }
+      });
+
+      $("#teamTbody").addEventListener("click", async (e)=>{
+        const rm = e.target?.dataset?.removeMember;
+        if(!rm) return;
+        if(confirm("Remover membro da empresa?")){
+          try{
+            await RPC.removeMember(State.activeOrgId, rm);
+            UI.toast("Membro removido");
+            await Data.loadTeam();
+            Render.team();
+          }catch(err){
+            UI.toast("Erro ao remover", err.message || String(err));
+          }
+        }
+      });
+    }
+
+    // ===========================
+    // Boot
+    // ===========================
+    wire();
+    Views.show("dashboard");
+    await Data.loadAll();
+
+    // Auth state changes
+    State.supa.auth.onAuthStateChange(async ()=>{
+      await Data.loadUser();
+      if(State.user){
+        UI.showAuth(false);
+        await Data.loadAll();
+      }else{
+        UI.showAuth(true);
+      }
+    });
+  </script>
+</body>
+</html>
